@@ -13,35 +13,36 @@ def main(vcf_file_path, tsv_file_path):
                 format_tags.update(sample.data._fields)
 
     # Open the VCF file and TSV file
-    with open(vcf_file_path, 'r') as vcf_file, open(tsv_file_path, 'w') as tsv_file:
-        vcf_reader = vcf.Reader(vcf_file)
+    with open(vcf_file_path, 'r') as vcf_file_object, open(tsv_file_path, 'w') as tsv_file_object:
+        vcf_reader = vcf.Reader(vcf_file_object)
 
         # Write the header row to the TSV file
-        tsv_file.write("CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER")
+        tsv_file_object.write("CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER")
 
         for tag in sorted(info_tags):
-            tsv_file.write(f"\t{tag}")
+            tsv_file_object.write(f"\t{tag}")
 
         for sample in vcf_reader.samples:
             for tag in sorted(format_tags):
-                tsv_file.write(f"\t{sample}_{tag}")
+                tsv_file_object.write(f"\t{sample}_{tag}")
 
         # Write each variant record to the TSV file
         for record in vcf_reader:
-            tsv_file.write(f"\n{record.CHROM}\t{record.POS}\t{record.ID}\t{record.REF}\t{','.join(map(str, record.ALT))}\t{record.QUAL}\t{record.FILTER}")
+            tsv_file_object.write(f"\n{record.CHROM}\t{record.POS}\t{record.ID}\t{record.REF}\t{','.join(map(str, record.ALT))}\t{record.QUAL}\t{record.FILTER}")
             for tag in sorted(info_tags):
                 if tag in record.INFO:
-                    tsv_file.write(f"\t{record.INFO[tag]}")
+                    tsv_file_object.write(f"\t{record.INFO[tag]}")
                 else:
-                    tsv_file.write("\t")
+                    tsv_file_object.write("\t")
 
             for sample in record.samples:
                 sample_dict = sample.data._asdict()
                 for tag in sorted(format_tags):
                     if tag in sample_dict:
-                        tsv_file.write(f"\t{sample_dict[tag]}")
+                        tsv_file_object.write(f"\t{sample_dict[tag]}")
                     else:
-                        tsv_file.write("\t")
+                        tsv_file_object.write("\t")
+
 
                         
 if __name__ == "__main__":
