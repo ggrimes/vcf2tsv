@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import vcf
 
-def main(vcf_file, tsv_file):
+def main(vcf_path, tsv_path):
     # Extract the INFO and FORMAT field tags and write them as additional columns to the header row
-    with open(vcf_file, 'r') as vcf_file:
+    with open(vcf_path, 'r') as vcf_file:
         vcf_reader = vcf.Reader(vcf_file)
         info_tags = set()
         format_tags = set()
@@ -13,7 +13,7 @@ def main(vcf_file, tsv_file):
                 format_tags.update(sample.data._fields)
 
     # Open the VCF file and TSV file
-    with open(vcf_file, 'r') as vcf_file, open(tsv_file, 'w') as tsv_file:
+    with open(vcf_path, 'r') as vcf_file, open(tsv_path, 'w') as tsv_file:
         vcf_reader = vcf.Reader(vcf_file)
 
         # Write the header row to the TSV file
